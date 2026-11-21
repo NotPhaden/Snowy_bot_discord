@@ -1,5 +1,5 @@
 
-name: Snowy RobRun Bot Deploy
+name: Snowy RobRun Bot
 
 on:
   push:
@@ -8,28 +8,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy to Render
+  check:
+    name: Check Repository
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check deploy hook
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: Verify files
         run: |
-          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "::error::RENDER_DEPLOY_HOOK_URL secret is missing!"
-            exit 1
-          fi
-          echo "Deploy hook secret detected."
+          echo "Repository checked successfully!"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
 
-      - name: Trigger Render deployment
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: Deployment information
         run: |
-          curl --fail --show-error --silent \
-            -X POST "$RENDER_DEPLOY_HOOK_URL"
-          echo "Render deployment triggered successfully."
+          echo "Changes pushed to main."
+          echo "Render will deploy automatically if auto-deploy is enabled."
